@@ -1,8 +1,6 @@
 package com.look.greenhousemanage.data
 
 import androidx.annotation.DrawableRes
-import androidx.compose.ui.tooling.preview.Preview
-
 
 data class FuncSelectInfo(
     val funcName: String,
