@@ -4,26 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.look.greenhousemanage.ui.theme.GreenhouseManageTheme
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.ScaffoldDefaults
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
 import com.look.greenhousemanage.data.navItems
 import com.look.greenhousemanage.ui.page.MainPage
 import com.look.greenhousemanage.ui.page.ManagePage
 import com.look.greenhousemanage.ui.page.MonitorPage
+import com.look.greenhousemanage.ui.theme.GreenhouseManageTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,18 +28,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MainScreen() {
     GreenhouseManageTheme {
-
-        // 对状态做记录和追踪
         var selectedIndex by remember { mutableIntStateOf(0) }
 
         Scaffold(
-            contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
-            // 整体样式
             modifier = Modifier.fillMaxSize(),
-            // 底部导航栏
             bottomBar = {
                 NavigationBar {
                     navItems.forEachIndexed { index, item ->
@@ -59,24 +48,48 @@ fun MainScreen() {
                                     contentDescription = item.btnName
                                 )
                             },
-                            label = { Text(item.btnName) }
+                            label = {
+                                Text(
+                                    text = item.btnName,
+                                    style = MaterialTheme.typography.labelSmall
+                                )
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                            )
                         )
                     }
                 }
             }
         ) { innerPadding ->
-            val modifier = Modifier.padding(innerPadding)
-            when (selectedIndex) {
-                0 -> MainPage(modifier)
-                1 -> MonitorPage(modifier)
-                2 -> ManagePage(modifier)
+            Column(modifier = Modifier.padding(innerPadding)) {
+                when (selectedIndex) {
+                    0 -> MainPage()
+                    1 -> MonitorPage()
+                    2 -> ManagePage()
+                    3 -> AiAnalysisPage()
+                }
             }
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SuperPreview() {
-    MainScreen()
+fun AiAnalysisPage(modifier: Modifier = Modifier) {
+    // 临时占位页面
+    Column(modifier = modifier.fillMaxSize()) {
+        com.look.greenhousemanage.ui.unit.PageTopAppBar(
+            title = "AI 智能分析",
+            subtitle = "基于大数据提供科学种植建议"
+        )
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outlineVariant,
+            thickness = 1.dp
+        )
+        // AI分析页面内容待实现
+    }
 }

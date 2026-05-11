@@ -1,94 +1,152 @@
 package com.look.greenhousemanage.ui.unit
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BackHand
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-
-@Preview
-@Composable
-fun ButtonPreview() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color(0xFFFFFFFF)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        SelectButton(
-            selected = false,
-            onClick = {},
-            ratio = 3.0f,
-            icon = Icons.Default.BackHand,
-            text = "手动控制",
-            roundCornerShape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp),
-            selectedColor = Color(0xCB673AB7),
-            unSelectedColor = Color(0xFFFFFFFF)
-        )
-    }
-}
 
 @Composable
 fun SelectButton(
     selected: Boolean = true,
     onClick: () -> Unit = {},
-    ratio: Float = 1.0f,
     icon: ImageVector,
     text: String,
-    roundCornerShape: RoundedCornerShape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp),
-    selectedColor: Color = Color.Green,
-    unSelectedColor: Color = Color.White,
+    modifier: Modifier = Modifier,
+    roundCornerShape: RoundedCornerShape = RoundedCornerShape(8.dp)
 ) {
-    val containerColor = if(selected) selectedColor else unSelectedColor
-    val contentColor = if(selected) unSelectedColor else selectedColor
-    val elevation = if(selected) (4 * ratio).dp else (1 * ratio).dp
-    val newRatio = if(selected) ratio * 0.95f else ratio
+    val containerColor = if (selected)
+        MaterialTheme.colorScheme.primary
+    else
+        MaterialTheme.colorScheme.surface
+    val contentColor = if (selected)
+        MaterialTheme.colorScheme.onPrimary
+    else
+        MaterialTheme.colorScheme.onSurface
 
     Button(
         onClick = onClick,
-        modifier = Modifier.size((50 * newRatio).dp, (15 * newRatio).dp),
+        modifier = modifier.height(40.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
-            disabledContainerColor = unSelectedColor
+            contentColor = contentColor
         ),
         shape = roundCornerShape,
-        contentPadding = PaddingValues((2 * newRatio).dp, (1 * newRatio).dp),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = elevation)
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = if (selected) 4.dp else 0.dp
+        )
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        Icon(
+            imageVector = icon,
+            contentDescription = text,
+            modifier = Modifier.size(18.dp)
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge
+        )
+    }
+}
+
+@Composable
+fun CtrlDeviceModeCard(
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = text,
-                modifier = Modifier.size((8 * newRatio).dp),
-                tint = contentColor
-            )
-            Text(
-                text = text,
-                fontSize = (8 * newRatio).sp,
-                color = contentColor,
-            )
+            // 标题
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "控制模式选择",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 控制按钮组
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row {
+                    SelectButton(
+                        selected = true,
+                        onClick = {},
+                        icon = Icons.Default.BackHand,
+                        text = "手动控制",
+                        roundCornerShape = RoundedCornerShape(
+                            topStart = 8.dp,
+                            bottomStart = 8.dp
+                        )
+                    )
+                    SelectButton(
+                        selected = false,
+                        onClick = {},
+                        icon = Icons.Default.Person,
+                        text = "智能控制",
+                        roundCornerShape = RoundedCornerShape(
+                            topEnd = 8.dp,
+                            bottomEnd = 8.dp
+                        )
+                    )
+                }
+
+                // 说明卡片
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f))
+                ) {
+                    Column(
+                        modifier = Modifier.padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "手动控制:",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "期间将禁止自动控制",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                    }
+                }
+            }
         }
     }
 }
